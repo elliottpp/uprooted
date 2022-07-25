@@ -12,7 +12,7 @@ router.get("/", authorize, async (req, res) => {
     // );
 
     const user = await pool.query(
-      "SELECT u.user_name, t.todo_id, t.description, u.user_id, u.coins FROM users AS u LEFT JOIN todos AS t ON u.user_id = t.user_id WHERE u.user_id = $1",
+      "SELECT u.user_name, ut.user_tree_id, ut.level, ut.time, t.name, t.type, u.user_id, u.coins FROM users AS u LEFT JOIN user_trees AS ut ON u.user_id = ut.user_id LEFT JOIN trees AS t ON t.tree_id = ut.tree_id WHERE u.user_id = $1",
       [req.user.id]
     );
     res.json(user.rows);
@@ -20,6 +20,9 @@ router.get("/", authorize, async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server error");
   }
+});
+
+router.get("/ad", authorize, async (req, res) => {
 });
 
 //gained coins (watched an ad)
@@ -48,6 +51,7 @@ router.post("/todos/", authorize, async (req, res) => {
       "UPDATE users SET coins = coins + $2 WHERE user_id = $1",
       [req.user.id, req.body.reward]
     );
+    res.json("/dashboard");
   } catch (err) {
     console.error(err.message);
   }

@@ -19,7 +19,7 @@ const Register = ({ setAuth }) => {
     try {
       const body = { email, password, name };
       const response = await fetch(
-        "http://localhost:5000/authentication/register",
+        "http://localhost:5001/authentication/register",
         {
           method: "POST",
           headers: {
@@ -33,10 +33,10 @@ const Register = ({ setAuth }) => {
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
         setAuth(true);
-        toast.success("Register Successfully");
+        toast.success("Register Successfully", {position: toast.POSITION.BOTTOM_LEFT});
       } else {
         setAuth(false);
-        toast.error(parseRes);
+        toast.error(parseRes, {position: toast.POSITION.BOTTOM_LEFT});
       }
     } catch (err) {
       console.error(err.message);

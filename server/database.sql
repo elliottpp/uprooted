@@ -1,26 +1,6 @@
--- CREATE DATABASE authtodo;
-
--- CREATE TABLE users(
---   user_id uuid DEFAULT uuid_generate_v4(),
---   user_name VARCHAR(255) NOT NULL,
---   user_email VARCHAR(255) NOT NULL UNIQUE,
---   user_password VARCHAR(255) NOT NULL,
---   PRIMARY KEY(user_id)
--- );
-
--- CREATE TABLE todo(
---   todo_id SERIAL,
---   user_id UUID ,
---   description VARCHAR(255),
---   PRIMARY KEY (todo_id),
---   FOREIGN KEY (user_id) REFERENCES users(user_id)
--- );
-
-
-CREATE DATABASE authtodolist;
+CREATE DATABASE uprooted;
 
 --users
-
 CREATE TABLE users(
   user_id UUID DEFAULT uuid_generate_v4(),
   user_name VARCHAR(255) NOT NULL,
@@ -30,27 +10,25 @@ CREATE TABLE users(
   PRIMARY KEY (user_id)
 );
 
---todos (coins)
-
-CREATE TABLE todos(
-  todo_id SERIAL,
-  user_id UUID,
-  description VARCHAR(255) NOT NULL,
-  PRIMARY KEY (todo_id),
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
 --trees
 CREATE TABLE trees(
   tree_id SERIAL,
-  user_id UUID,
   name VARCHAR(255) NOT NULL,
-  level INTEGER NOT NULL,
   type VARCHAR(255) NOT NULL,
   cost INTEGER NOT NULL,
+  PRIMARY KEY (tree_id)
+);
+
+--user trees
+CREATE TABLE user_trees(
+  user_tree_id SERIAL,
+  tree_id SERIAL,
+  user_id UUID,
+  level INTEGER NOT NULL,
   time TIME NOT NULL,
-  PRIMARY KEY (tree_id),
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  PRIMARY KEY (user_tree_id),
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (tree_id) REFERENCES trees(tree_id)
 );
 
 --shop
@@ -64,8 +42,12 @@ CREATE TABLE shop(
 
 --fake users data
 
-insert into users (user_name, user_email, user_password) values ('Jacob', 'jacob@gmail.com', 'kthl8822');
+INSERT INTO users (user_name, user_email, user_password) values ('pog', 'jacobee@gmail.com', 'literallyanthing');
 
---fake todos data
-
-insert into todos (user_id, description) values ('60dc16dd-c7f1-4fde-827a-90c0e101555c', 'clean room');
+--add shop trees
+INSERT INTO trees (name, type, cost) values ('oak1', 'oak', 20);
+INSERT INTO trees (name, type, cost) values ('oak2', 'oak', 40);
+INSERT INTO trees (name, type, cost) values ('oak3', 'oak', 80);
+INSERT INTO trees (name, type, cost) values ('oak4', 'oak', 20);
+INSERT INTO trees (name, type, cost) values ('oak5', 'oak', 60);
+INSERT INTO trees (name, type, cost) values ('oak6', 'oak', 40);

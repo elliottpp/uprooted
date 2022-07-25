@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import myVideo from '../../assets/test.mp4';
-import coin from '../../assets/coin.png';
 //components
 
 import InputTodo from "./todolist/InputTodo";
-import ListTodos from "./todolist/ListTodos";
+import ListInventory from "./trees/ListInventory";
 
 const Dashboard = ({ setAuth }) => {
   const [name, setName] = useState("");
   const [coins, setCoins] = useState(0);
-  const [allTodos, setAllTodos] = useState([]);
-  const [todosChange, setTodosChange] = useState(false);
+  const [allTrees, setAllTrees] = useState([]);
+  const [treesChange, setTreesChange] = useState(false);
   const [description, setDescription] = useState("");
   const [user_id, setID] = useState(0);
 
   const getProfile = async () => {
     try {
-      const res = await fetch("http://localhost:5000/dashboard/", {
+      const res = await fetch("http://localhost:5001/dashboard/", {
         method: "GET",
         headers: { jwt_token: localStorage.token }
       });
 
       const parseData = await res.json();
-      console.log(parseData[0]);
-      setAllTodos(parseData);
-
+      console.log(parseData);
+      setAllTrees(parseData);
       setName(parseData[0].user_name);
       setID(parseData[0].user_id)
       setCoins(parseData[0].coins);
@@ -48,7 +45,7 @@ const Dashboard = ({ setAuth }) => {
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("jwt_token", localStorage.token);
 
-    await fetch(`http://localhost:5000/dashboard/todos/`, {
+    await fetch(`http://localhost:5001/dashboard/todos/`, {
       method: "POST",
       headers: myHeaders,
       contentType: "application/json; charset=utf-8",
@@ -65,7 +62,7 @@ const Dashboard = ({ setAuth }) => {
     try {
       localStorage.removeItem("token");
       setAuth(false);
-      toast.success("Logout successfully");
+      toast.success("Logout successfully", {position: toast.POSITION.BOTTOM_LEFT});
     } catch (err) {
       console.error(err.message);
     }
@@ -73,23 +70,33 @@ const Dashboard = ({ setAuth }) => {
 
   useEffect(() => {
     getProfile();
-    setTodosChange(false);
-  }, [todosChange]);
+    setTreesChange(false);
+  }, [treesChange]);
 
   return (
     <div>
-      <div className="d-flex mt-5 justify-content-around">
-        <h2>{name} 's Tree Inventory</h2>
-        <h2><img class="rounded" width="41" height="38" src={coin}></img>{coins}</h2>
-        <button onClick={e => logout(e)} className="btn btn-primary">
-          Logout
-        </button>
+      <nav class="navbar navbar-dark navbar-expand-sm bg-dark fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header" style={{flexDirection: 'row'}}>
+              <img className="" style={{paddingRight:25}}width="20%" height="20%" src={`${process.env.PUBLIC_URL}/assets/images/logo.png`} ></img>
+                <h2 class="navbar-brand">{name} 's Tree Inventory</h2>
+            </div>
+                <ul class="navbar-nav ml-aut" style={{flexDirection: 'row', whiteSpace: 'nowrap'}}>
+                    <li class="nav-item"><Link className="nav-link active" to="/dashboard">inventory</Link></li>
+                    <li class="nav-item"><Link className="nav-link active" to="/shop">shop</Link></li>
+                    <li class="nav-item"><Link className="nav-link active" to="/ad">watch ad</Link></li>
+                    <li class="nav-item"> 
+                    <img className="rounded" width="41" height="38" src={`${process.env.PUBLIC_URL}/assets/images/coin.png`}></img></li>
+                    <li class="nav-item"> <h2 class="navbar-brand">{coins}</h2></li>
+                    <button onClick={e => logout(e)} className="btn btn-primary">
+                      Logout
+                    </button>
+                </ul>
+        </div>
+    </nav>
+    <div class="container">
+      <ListInventory allTrees={allTrees} setTreesChange={setTreesChange} />
       </div>
-
-      <video autoPlay muted id="adVideo" onEnded={watchAd} onPlay={e => setDescription("20")} class="embed-responsive embed-responsive-16by9">
-      <source src={myVideo} type="video/mp4"/>
-      </video>
-      <Link to="/shop">shop</Link>
     </div>
   );
 };

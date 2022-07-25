@@ -16,6 +16,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/dashboard/Dashboard";
 import Shop from "./components/shop/Shop";
+import Ad from "./components/ad/WatchAD";
 import Landing from "./components/Landing";
 
 toast.configure();
@@ -23,7 +24,7 @@ toast.configure();
 function App() {
   const checkAuthenticated = async () => {
     try {
-      const res = await fetch("http://localhost:5000/authentication/verify", {
+      const res = await fetch("http://localhost:5001/authentication/verify", {
         method: "POST",
         headers: { jwt_token: localStorage.token }
       });
@@ -33,6 +34,7 @@ function App() {
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
     } catch (err) {
       console.error(err.message);
+      console.log(localStorage.token);
     }
   };
 
@@ -90,6 +92,17 @@ function App() {
               render={props =>
                 isAuthenticated ? (
                   <Shop {...props} setAuth={setAuth} />
+                ) : (
+                  <Redirect to="/login" />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/ad"
+              render={props =>
+                isAuthenticated ? (
+                  <Ad {...props} setAuth={setAuth} />
                 ) : (
                   <Redirect to="/login" />
                 )

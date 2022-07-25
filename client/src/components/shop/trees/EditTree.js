@@ -1,24 +1,32 @@
 import React, { Fragment, useState } from "react";
-
+import { toast } from "react-toastify";
 const EditTree = ({ tree, setTreeChange }) => {
-
-  const editLevel = async id => {
+  
+  const buyTree = async (id, cost) => {
     try {
 
-    const body = {};
-    body.level = 1;
+    const body = {id, cost};
+    console.log(body);
     const myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("jwt_token", localStorage.token);
 
-    await fetch(`http://localhost:5000/shop/trees/`, {
+    const response = await fetch(`http://localhost:5001/shop/trees/`, {
         method: "POST",
         headers: myHeaders,
         contentType: "application/json; charset=utf-8",
-        body: JSON.stringify(body) })
-
-      setTreeChange(true);
+        body: JSON.stringify(body) 
+    });
+    let parseData = await response.json();
+    console.log("yo");
+    console.log(parseData);
+    if (parseData == "no money") {
+      toast.error("you don't have enough coins", {position: toast.POSITION.BOTTOM_LEFT});
+    } else {
+      toast.success("tree successfully bought", {position: toast.POSITION.BOTTOM_LEFT});
+    }
+    setTreeChange(true);
 
       // window.location = "/";
     } catch (err) {
@@ -32,62 +40,13 @@ const EditTree = ({ tree, setTreeChange }) => {
     <Fragment>
       <button
         type="button"
-        className="btn btn-warning"
+        className="btn btn-success btn-lg"
         data-toggle="modal"
         data-target={`#id${tree.tree_id}`}
+        onClick={() => buyTree(tree.tree_id, tree.cost)}
       >
-        Edit
+        Buy
       </button>
-      {/* id = "id21"*/}
-      <div
-        className="modal"
-        id={`id${tree.tree_id}`}
-        onClick={() => setDescription(tree.description)}
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h4 className="modal-title">Edit Todo</h4>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                onClick={() => setDescription(tree.description)}
-              >
-                &times;
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <input
-                type="text"
-                className="form-control"
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-              />
-            </div>
-
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-warning"
-                data-dismiss="modal"
-                onClick={() => editLevel(tree.todo_id)}
-              >
-                Upgrade
-              </button>
-              <button
-                type="button"
-                className="btn btn-danger"
-                data-dismiss="modal"
-                onClick={() => setDescription(tree.description)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </Fragment>
   );
 };

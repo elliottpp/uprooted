@@ -19,7 +19,7 @@ const Login = ({ setAuth }) => {
     try {
       const body = { email, password };
       const response = await fetch(
-        "http://localhost:5000/authentication/login",
+        "http://localhost:5001/authentication/login",
         {
           method: "POST",
           headers: {
@@ -34,10 +34,10 @@ const Login = ({ setAuth }) => {
       if (parseRes.jwtToken) {
         localStorage.setItem("token", parseRes.jwtToken);
         setAuth(true);
-        toast.success("Logged in Successfully");
+        toast.success("Logged in Successfully", {position: toast.POSITION.BOTTOM_LEFT});
       } else {
         setAuth(false);
-        toast.error(parseRes);
+        toast.error(parseRes, {position: toast.POSITION.BOTTOM_LEFT});
       }
     } catch (err) {
       console.error(err.message);
