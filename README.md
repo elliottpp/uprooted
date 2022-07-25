@@ -1,6 +1,6 @@
 # uprooted
  
-full stack PERN web app
+full stack PERN web app\n
 -JWT auth login and registration
 -postgres database schema is server/database.sql
 
